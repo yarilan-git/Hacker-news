@@ -35,7 +35,16 @@
 <!-- top navigation bar -->
 <nav>
   <div class="navbar-brand">
-    <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
+    <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>    
+  </div>
+  <div id = "user-story-actions" class = "hidden">
+    | 
+    <a class="nav-link" href="#" id = "submit-story">Submit</a>
+     |
+    <a class="nav-link" href="#" id = "show-favorites">Favorites</a>
+     |
+    <a class="nav-link" href="#" id = "my-stories">My stories</a>
+     |
   </div>
   <div class="nav-right">
     <a class="nav-link" href="#" id="nav-login">login/signup</a>
@@ -96,15 +105,38 @@
   </form>
 </section>
 
+<!-- New story form -->
+
+<form action="#" id="new-story-form" method="post" class="container hidden">
+
+  <!-- title -->
+  <div class="login-input">
+    <label for="title">Title</label>
+    <input type="text" id="title">
+  </div>
+  <!-- author -->
+  <div class="login-input">
+    <label for="author">Author</label>
+    <input type="text" id="author">
+  </div>
+  <!-- url -->
+  <div class="login-input">
+    <label for="url">URL</label>
+    <input type="url" id="url">
+  </div>
+  <!-- submit button -->
+  <button type="submit">Submit story</button>
+</form>
+
 <!-- Library JS & our JS -->
 <script src="https://unpkg.com/jquery"></script>
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
-
 <script src="js/models.js"></script>
 <script src="js/main.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/user.js"></script>
 <script src="js/stories.js"></script>
+
 
 </body>
 </html>

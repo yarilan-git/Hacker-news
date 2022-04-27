@@ -17,14 +17,33 @@ async function login(evt) {
   const username = $("#login-username").val();
   const password = $("#login-password").val();
 
-  // User.login retrieves user info from API and returns User instance
-  // which we'll make the globally-available, logged-in user.
-  currentUser = await User.login(username, password);
+  if (username && password) {
 
-  $loginForm.trigger("reset");
+    // User.login retrieves user info from API and returns User instance
+    // which we'll make the globally-available, logged-in user.
+    try {
+      currentUser = await User.login(username, password);
+      // if (currentUser) {
+        $loginForm.trigger("reset");
 
-  saveUserCredentialsInLocalStorage();
-  updateUIOnUserLogin();
+        saveUserCredentialsInLocalStorage();
+        userStories.length = 0;
+        for (let story of currentUser.ownStories) {
+          userStories.push(story);
+        }
+
+        userFavorites.length = 0;
+        for (let fav of currentUser.favorites) {
+          userFavorites.push(fav);
+        }
+
+        updateUIOnUserLogin();
+    } catch {    
+      alert("The provided username or password are incorrect.");
+    }
+  } else {
+      alert("Both username and password are required!")
+    };
 }
 
 $loginForm.on("submit", login);
@@ -34,19 +53,22 @@ $loginForm.on("submit", login);
 async function signup(evt) {
   console.debug("signup", evt);
   evt.preventDefault();
+  if ($("#signup-name").val() && $("#signup-username").val() && $("#signup-password").val()) {
+    const name = $("#signup-name").val();
+    const username = $("#signup-username").val();
+    const password = $("#signup-password").val();
 
-  const name = $("#signup-name").val();
-  const username = $("#signup-username").val();
-  const password = $("#signup-password").val();
+    // User.signup retrieves user info from API and returns User instance
+    // which we'll make the globally-available, logged-in user.
+    currentUser = await User.signup(username, password, name);
 
-  // User.signup retrieves user info from API and returns User instance
-  // which we'll make the globally-available, logged-in user.
-  currentUser = await User.signup(username, password, name);
+    saveUserCredentialsInLocalStorage();
+    updateUIOnUserLogin();
 
-  saveUserCredentialsInLocalStorage();
-  updateUIOnUserLogin();
-
-  $signupForm.trigger("reset");
+    $signupForm.trigger("reset");
+  } else {
+    alert("All of the information in the form is required.")
+  }
 }
 
 $signupForm.on("submit", signup);
@@ -80,6 +102,18 @@ async function checkForRememberedUser() {
 
   // try to log in with these credentials (will be null if login failed)
   currentUser = await User.loginViaStoredCredentials(token, username);
+  if (currentUser) {
+    userStories.length = 0;
+    for (let story of currentUser.ownStories) {
+       userStories.push(story);
+    }
+
+    userFavorites.length = 0;
+    for (let fav of currentUser.favorites) {
+       userFavorites.push(fav);
+    }
+
+  }
 }
 
 /** Sync current user information to localStorage.
@@ -111,6 +145,10 @@ function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
   $allStoriesList.show();
+  $loginForm.hide();
+  $signupForm.hide();
+  
 
   updateNavOnLogin();
+  putStoriesOnPage();
 }

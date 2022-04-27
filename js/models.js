@@ -1,9 +1,6 @@
 "use strict";
 
 const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
-const testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imouc21pdGgiLCJpYXQiOjE2NTA0MDM4OTN9.q1KMoGb9EehZWlL7p4-1MLFqadSax0l5hAP7rNkeTIA";
-const testUser = {loginToken: testToken};
-const testStoryTOAdd = {author: "Steve", title: "The Title", url: "www.google.com"};
 
 /******************************************************************************
  * Story: a single story in the system
@@ -26,9 +23,8 @@ class Story {
 
   /** Parses hostname out of URL and returns it. */
 
-  getHostName() {
-    // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+  getHostName(story) {
+        return story.url;
   }
 }
 
@@ -80,6 +76,8 @@ class StoryList {
     const result = await axios.post(`${BASE_URL}/stories`,
                                  {token: user.loginToken, story: {author : storyToAdd.author, title: storyToAdd.title, url: storyToAdd.url}});                                 
     const newStory = new Story(result.data.story);
+    storyList.stories.push(newStory);
+    userStories.push(newStory);
     return newStory;  
   }
   // async addStory( user, { title, author, url}) {
@@ -88,7 +86,12 @@ class StoryList {
   //   const newStory = new Story(result.data.story);
   //   return newStory;  
   // }
+
+  async removeStoryFromAPI(user, storyID) {
+    let result = await axios.delete(`${BASE_URL}/stories/${storyID}`, { data: {token : user.loginToken}});
+  }
 }
+
 
 
 /******************************************************************************
@@ -205,4 +208,22 @@ class User {
       return null;
     }
   }
+  async addOrRemoveFav(user, storyID, request) {   
+    let result;   
+    switch (request) {
+      case 'add':
+        
+      result = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, {token : user.loginToken});
+    
+      break;
+      case 'remove':
+        
+      result = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, { data: {token : user.loginToken}});    
+     break;     
+    }
+    
+    currentUser = Object.assign(currentUser, result.data.user);
+    putfavoritesOnPage();
+    
+  }  
 }

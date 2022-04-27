@@ -1,4 +1,7 @@
+
 "use strict";
+
+
 
 /******************************************************************************
  * Handling navbar clicks and updating navbar
@@ -30,7 +33,38 @@ $navLogin.on("click", navLoginClick);
 function updateNavOnLogin() {
   console.debug("updateNavOnLogin");
   $(".main-nav-links").show();
+  $("#user-story-actions").show();
   $navLogin.hide();
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
+
+async function submitStory(e) {
+  e.preventDefault(); 
+  $allStoriesList.hide();
+  $loginForm.hide();
+  $signupForm.hide();
+  $("#new-story-form").show();  
+}
+
+async function showfavorites (e) {
+  e.preventDefault();  
+  hidePageComponents();
+  putfavoritesOnPage();
+}
+
+function showMyStories(e) {
+  e.preventDefault();
+  $allStoriesList.hide();
+  hidePageComponents();
+  putUserStoriesOnPage();
+}
+
+$("#submit-story").on("click", submitStory);
+$("#show-favorites").on("click", showfavorites);
+$("#my-stories").on("click", showMyStories);
+
+
+
+
+
